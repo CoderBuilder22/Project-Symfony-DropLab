@@ -1,0 +1,247 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}About DropLab{% endblock %}
+
+{% block body %}
+<div class="about-hero py-5 mb-5">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <h1 class="display-4 mb-4 text-gradient">About DropLab</h1>
+                <p class="lead text-light-muted mb-4">The premier platform for producers to sell their beats and for artists to find their next hit.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container mb-5">
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="feature-card bg-dark-elevated p-4 rounded-4 h-100">
+                <div class="icon-wrapper mb-4">
+                    <i class="fas fa-music fa-2x text-gradient"></i>
+                </div>
+                <h3 class="h5 mb-3 text-light">Quality Beats</h3>
+                <p class="text-light-muted mb-0">Access thousands of high-quality beats from talented producers worldwide. Find the perfect sound for your next track.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="feature-card bg-dark-elevated p-4 rounded-4 h-100">
+                <div class="icon-wrapper mb-4">
+                    <i class="fas fa-dollar-sign fa-2x text-gradient"></i>
+                </div>
+                <h3 class="h5 mb-3 text-light">Fair Pricing</h3>
+                <p class="text-light-muted mb-0">Competitive prices and transparent licensing. No hidden fees. Get the rights you need at prices you can afford.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="feature-card bg-dark-elevated p-4 rounded-4 h-100">
+                <div class="icon-wrapper mb-4">
+                    <i class="fas fa-shield-alt fa-2x text-gradient"></i>
+                </div>
+                <h3 class="h5 mb-3 text-light">Secure Platform</h3>
+                <p class="text-light-muted mb-0">Your transactions and downloads are protected. We ensure a safe and reliable platform for all users.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container mb-5">
+    <div class="row align-items-center">
+        <div class="col-lg-6 mb-4 mb-lg-0">
+            <h2 class="h1 mb-4 text-gradient">Our Mission</h2>
+            <p class="text-light-muted">At DropLab, we're passionate about connecting talented producers with artists who are looking for the perfect beat. Our platform makes it easy to discover, purchase, and download high-quality beats for your next project.</p>
+            <p class="text-light-muted">Whether you're a producer looking to sell your beats or an artist searching for inspiration, DropLab provides the tools and platform you need to succeed in the music industry.</p>
+        </div>
+        <div class="col-lg-6">
+            <div class="stats-grid">
+                <div class="stat-card bg-dark-elevated p-4 rounded-4 text-center">
+                    <h3 class="display-5 text-gradient mb-2">10K+</h3>
+                    <p class="text-light-muted mb-0">Beats Available</p>
+                </div>
+                <div class="stat-card bg-dark-elevated p-4 rounded-4 text-center">
+                    <h3 class="display-5 text-gradient mb-2">5K+</h3>
+                    <p class="text-light-muted mb-0">Active Producers</p>
+                </div>
+                <div class="stat-card bg-dark-elevated p-4 rounded-4 text-center">
+                    <h3 class="display-5 text-gradient mb-2">50K+</h3>
+                    <p class="text-light-muted mb-0">Happy Customers</p>
+                </div>
+                <div class="stat-card bg-dark-elevated p-4 rounded-4 text-center">
+                    <h3 class="display-5 text-gradient mb-2">100K+</h3>
+                    <p class="text-light-muted mb-0">Downloads</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container mb-5">
+    <div class="cta-section bg-dark-elevated p-5 rounded-4 text-center">
+        <h2 class="display-5 text-gradient mb-4">Ready to Get Started?</h2>
+        <p class="text-light-muted mb-4">Join our community of producers and artists today.</p>
+        <div class="d-flex justify-content-center gap-3">
+            <a href="{{ path('app_register') }}" class="btn btn-gradient btn-lg">
+                <i class="fas fa-user-plus me-2"></i>Sign Up Now
+            </a>
+            <a href="{{ path('app_beat_index') }}" class="btn btn-outline-gradient btn-lg">
+                Browse Beats
+            </a>
+        </div>
+    </div>
+</div>
+
+<style>
+:root {
+    --gradient-start: #7928CA;
+    --gradient-end: #FF0080;
+    --dark-elevated: #1a1a1a;
+}
+
+.about-hero {
+    background: linear-gradient(135deg, var(--darker-bg) 0%, var(--dark-bg) 100%);
+    position: relative;
+    overflow: hidden;
+}
+
+.about-hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at top right, rgba(121, 40, 202, 0.15), transparent 50%);
+    pointer-events: none;
+}
+
+.text-gradient {
+    background: linear-gradient(to right, var(--gradient-start), var(--gradient-end));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: var(--gradient-start);
+}
+
+.text-light-muted {
+    color: rgba(255, 255, 255, 0.7) !important;
+}
+
+.bg-dark-elevated {
+    background-color: var(--dark-elevated);
+}
+
+.feature-card {
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+}
+
+.feature-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.icon-wrapper {
+    background: linear-gradient(135deg, rgba(121, 40, 202, 0.1), rgba(255, 0, 128, 0.1));
+    width: 64px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 16px;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+}
+
+.stat-card {
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.stat-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.btn-gradient {
+    background: linear-gradient(to right, var(--gradient-start), var(--gradient-end));
+    border: none;
+    color: white;
+    transition: all 0.3s ease;
+}
+
+.btn-gradient:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(121, 40, 202, 0.4);
+    color: white;
+}
+
+.btn-outline-gradient {
+    background: transparent;
+    border: 2px solid;
+    border-image: linear-gradient(to right, var(--gradient-start), var(--gradient-end)) 1;
+    color: white;
+    transition: all 0.3s ease;
+}
+
+.btn-outline-gradient:hover {
+    background: linear-gradient(to right, var(--gradient-start), var(--gradient-end));
+    border-image: none;
+    color: white;
+    transform: translateY(-2px);
+}
+
+.cta-section {
+    position: relative;
+    overflow: hidden;
+}
+
+.cta-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at bottom right, rgba(255, 0, 128, 0.15), transparent 50%);
+    pointer-events: none;
+}
+
+@media (max-width: 768px) {
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .btn-gradient, .btn-outline-gradient {
+        width: 100%;
+        margin: 0.5rem 0;
+    }
+    
+    .d-flex.justify-content-center.gap-3 {
+        flex-direction: column;
+    }
+}
+
+@media (max-width: 576px) {
+    .display-4 {
+        font-size: 2.5rem;
+    }
+    
+    .display-5 {
+        font-size: 2rem;
+    }
+    
+    .icon-wrapper {
+        width: 48px;
+        height: 48px;
+    }
+}
+</style>
+{% endblock %} 

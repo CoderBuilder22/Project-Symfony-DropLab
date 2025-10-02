@@ -1,0 +1,122 @@
+# Homepage route (this should be first)
+app_home:
+    path: /
+    controller: App\Controller\HomeController::index
+    methods: [GET]
+
+# Beat routes
+app_beat_index:
+    path: /beats
+    controller: App\Controller\BeatController::index
+    methods: [GET]
+
+app_beat_new:
+    path: /beats/new
+    controller: App\Controller\BeatController::new
+    methods: [GET, POST]
+
+app_beat_show:
+    path: /beats/{id}
+    controller: App\Controller\BeatController::show
+    methods: [GET]
+
+app_beat_edit:
+    path: /beats/{id}/edit
+    controller: App\Controller\BeatController::edit
+    methods: [GET, POST]
+
+app_beat_delete:
+    path: /beats/{id}/delete
+    controller: App\Controller\BeatController::delete
+    methods: [POST]
+
+# Cart routes
+app_cart_index:
+    path: /cart
+    controller: App\Controller\CartController::index
+    methods: [GET]
+
+app_cart_add:
+    path: /cart/add/{id}
+    controller: App\Controller\CartController::add
+    methods: [POST]
+
+cart_remove_item:
+    path: /cart/remove/{id}
+    controller: App\Controller\CartController::remove
+    methods: [POST]
+
+app_cart_clear:
+    path: /cart/clear
+    controller: App\Controller\CartController::clear
+    methods: [POST]
+
+# Security routes
+app_login:
+    path: /login
+    controller: App\Controller\SecurityController::login
+    methods: [GET, POST]
+
+app_logout:
+    path: /logout
+    controller: App\Controller\SecurityController::logout
+    methods: [GET]
+
+# Registration routes
+app_register:
+    path: /register
+    controller: App\Controller\RegistrationController::register
+    methods: [GET, POST]
+
+# Payment routes
+payment_checkout:
+    path: /payment/checkout/{id}
+    controller: App\Controller\PaymentController::checkout
+    methods: [GET]
+
+payment_process:
+    path: /payment/process/{id}
+    controller: App\Controller\PaymentController::process
+    methods: [POST]
+
+payment_success:
+    path: /payment/success/{id}
+    controller: App\Controller\PaymentController::success
+    methods: [GET]
+
+payment_download:
+    path: /payment/download/{id}
+    controller: App\Controller\PaymentController::download
+    methods: [GET]
+
+payment_history:
+    path: /payment/history
+    controller: App\Controller\PaymentController::history
+    methods: [GET]
+
+# About route
+app_about:
+    path: /about
+    controller: App\Controller\AboutController::index
+    methods: [GET]
+
+# Dashboard routes
+app_dashboard:
+    path: /dashboard
+    controller: App\Controller\DashboardController::index
+    methods: [GET]
+
+app_dashboard_beat_new:
+    path: /dashboard/beat/new
+    controller: App\Controller\DashboardController::new
+    methods: [GET, POST]
+
+app_dashboard_beat_edit:
+    path: /dashboard/beat/{id}/edit
+    controller: App\Controller\DashboardController::edit
+    methods: [GET, POST]
+
+app_dashboard_beat_delete:
+    path: /dashboard/beat/{id}/delete
+    controller: App\Controller\DashboardController::delete
+    methods: [POST]

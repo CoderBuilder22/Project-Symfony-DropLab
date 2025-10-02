@@ -1,0 +1,163 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Checkout{% endblock %}
+
+{% block body %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card bg-dark">    
+                <div class="card-body p-4">
+                    <!-- Order Summary -->
+                    <div class="order-summary mb-4">
+                        <h3 class="text-white text-center mb-4">Your Order</h3>
+                        {% if cart is defined %}
+                            <div class="beats-list">
+                                {% for item in cart.cartItems %}
+                                    <div class="d-flex align-items-center bg-darker p-3 rounded mb-3">
+                                        <img src="{{ asset('uploads/images/covers/' ~ item.beat.coverImage) }}" 
+                                             alt="{{ item.beat.title }}" 
+                                             class="rounded me-3" 
+                                             style="width: 80px; height: 80px; object-fit: cover;">
+                                        <div class="flex-grow-1">
+                                            <h5 class="text-white mb-1">{{ item.beat.title }}</h5>
+                                            <p class="text-light mb-1">Producer: {{ item.beat.producer.username }}</p>
+                                            <h4 class="text-primary mb-0">${{ item.price }}</h4>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                                <div class="total-section bg-darker p-3 rounded">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <h5 class="text-white mb-0">Total Amount</h5>
+                                        <h3 class="text-primary mb-0">${{ total }}</h3>
+                                    </div>
+                                </div>
+                            </div>
+                        {% else %}
+                            <div class="d-flex align-items-center bg-darker p-3 rounded">
+                                <img src="{{ asset('uploads/images/covers/' ~ beat.coverImage) }}" 
+                                     alt="{{ beat.title }}" 
+                                     class="rounded me-3" 
+                                     style="width: 80px; height: 80px; object-fit: cover;">
+                                <div>
+                                    <h5 class="text-white mb-1">{{ beat.title }}</h5>
+                                    <p class="text-light mb-1">Producer: {{ beat.producer.username }}</p>
+                                    <h4 class="text-primary mb-0">${{ beat.price }}</h4>
+                                </div>
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Payment Form -->
+                    <form action="{% if cart is defined %}{{ path('payment_process_cart', {'id': cart.id}) }}{% else %}{{ path('payment_process', {'id': beat.id}) }}{% endif %}" 
+                          method="POST" 
+                          id="payment-form">
+                        <!-- Card Number -->
+                        <div class="mb-3">
+                            <label class="form-label text-white">Card Number</label>
+                            <input type="text" class="form-control form-control-lg" maxlength="19" placeholder="4242 4242 4242 4242" required>
+                        </div>
+
+                        <div class="row mb-3">
+                            <!-- Expiry Date -->
+                            <div class="col-6">
+                                <label class="form-label text-white">Expiry Date</label>
+                                <input type="text" class="form-control form-control-lg" placeholder="MM/YY" maxlength="5" required>
+                            </div>
+                            <!-- CVV -->
+                            <div class="col-6">
+                                <label class="form-label text-white">CVV</label>
+                                <input type="text" class="form-control form-control-lg" placeholder="123" maxlength="3" required>
+                            </div>
+                        </div>
+
+                        <!-- Name on Card -->
+                        <div class="mb-4">
+                            <label class="form-label text-white">Name on Card</label>
+                            <input type="text" class="form-control form-control-lg" placeholder="Ahmed Nasri" required>
+                        </div>
+
+                        <!-- Pay Button -->
+                        <button type="submit" class="btn btn-primary btn-lg w-100">
+                            Pay ${% if cart is defined %}{{ total }}{% else %}{{ beat.price }}{% endif %}
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.bg-darker {
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
+.form-control {
+    background-color: #2a2a2a;
+    border: 1px solid #3a3a3a;
+    color: #ffffff;
+}
+
+.form-control::placeholder {
+    color: #808080;
+}
+
+.form-control:focus {
+    background-color: #2a2a2a;
+    border-color: #0d6efd;
+    color: #ffffff;
+    box-shadow: none;
+}
+
+.btn-primary {
+    background: linear-gradient(to right, #0d6efd, #0a58ca);
+    border: none;
+    padding: 12px;
+    color: #ffffff;
+}
+
+.btn-primary:hover {
+    background: linear-gradient(to right, #0a58ca, #084298);
+    transform: translateY(-1px);
+    color: #ffffff;
+}
+
+.text-light {
+    color: #e0e0e0 !important;
+}
+
+.text-white {
+    color: #ffffff !important;
+}
+
+.beats-list {
+    max-height: 400px;
+    overflow-y: auto;
+    margin-bottom: 1rem;
+}
+
+.beats-list::-webkit-scrollbar {
+    width: 8px;
+}
+
+.beats-list::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+}
+
+.beats-list::-webkit-scrollbar-thumb {
+    background: rgba(13, 110, 253, 0.5);
+    border-radius: 4px;
+}
+
+.beats-list::-webkit-scrollbar-thumb:hover {
+    background: rgba(13, 110, 253, 0.7);
+}
+
+.total-section {
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    margin-top: 1rem;
+}
+</style>
+{% endblock %} 

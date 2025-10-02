@@ -1,0 +1,531 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Browse Beats{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        :root {
+            --accent-color: #4361ee;
+            --accent-hover: #3048c4;
+            --dark-bg: #121212;
+            --card-bg: rgba(255, 255, 255, 0.05);
+            --card-border: rgba(67, 97, 238, 0.3);
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.7);
+        }
+
+        .main-content {
+            padding-top: 4.5rem;
+            padding-bottom: 2rem;
+            min-height: 100vh;
+            background: var(--dark-bg);
+        }
+
+        .filter-section {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2.5rem;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .filter-title {
+            font-size: 1.2rem;
+            color: var(--text-primary);
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 600;
+        }
+
+        .filter-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .filter-option {
+            background: rgba(67, 97, 238, 0.12);
+            border: 1px solid rgba(67, 97, 238, 0.25);
+            color: var(--text-primary);
+            padding: 0.75rem 1.5rem;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+            text-decoration: none;
+            font-weight: 600;
+            user-select: none;
+            outline-offset: 2px;
+        }
+
+        .filter-option:hover, .filter-option:focus {
+            background: var(--accent-hover);
+            border-color: var(--accent-hover);
+            color: white;
+            box-shadow: 0 6px 15px rgba(67, 97, 238, 0.3);
+            transform: none;
+            outline: none;
+        }
+
+        .filter-option.active {
+            background: var(--accent-color);
+            border-color: var(--accent-color);
+            color: white;
+            box-shadow: 0 6px 15px rgba(67, 97, 238, 0.4);
+            transform: none;
+        }
+
+        select.genre-select {
+            background: rgba(67, 97, 238, 0.12);
+            border: 1px solid rgba(67, 97, 238, 0.25);
+            color: var(--text-primary);
+            padding: 0.75rem 1.5rem;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            outline-offset: 2px;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            width: 200px;
+        }
+
+        select.genre-select:hover, select.genre-select:focus {
+            background: var(--accent-hover);
+            border-color: var(--accent-hover);
+            color: white;
+            box-shadow: 0 6px 15px rgba(67, 97, 238, 0.3);
+            outline: none;
+        }
+
+        .beats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1.5rem;
+            padding: 1rem 0;
+        }
+
+        .beat-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            display: block;
+            position: relative;
+            text-decoration: none;
+        }
+
+        .beat-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(67, 97, 238, 0.3);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .beat-image-wrapper {
+            position: relative;
+            padding-top: 100%;
+            overflow: hidden;
+        }
+
+        .beat-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .beat-card:hover .beat-image {
+            transform: scale(1.1);
+        }
+
+        .beat-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .beat-card:hover .beat-overlay {
+            opacity: 1;
+        }
+
+        .beat-play-btn {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.8);
+            width: 60px;
+            height: 60px;
+            background: rgba(67, 97, 238, 0.9);
+            border: none;
+            border-radius: 50%;
+            color: white;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            z-index: 2;
+        }
+
+        .beat-card:hover .beat-play-btn {
+            transform: translate(-50%, -50%) scale(1);
+            background: var(--accent-color);
+        }
+
+        .beat-info {
+            padding: 1.5rem;
+            background: linear-gradient(
+                to top,
+                rgba(0, 0, 0, 0.8),
+                rgba(0, 0, 0, 0.4)
+            );
+        }
+
+        .beat-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .beat-producer {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .beat-details {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .beat-bpm {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .beat-bpm i {
+            color: var(--accent-color);
+        }
+
+        .beat-actions {
+            flex-shrink: 0;
+        }
+
+        .beat-price-btn {
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.25rem;
+            border-radius: 25px;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(67, 97, 238, 0.2);
+            text-decoration: none;
+        }
+
+        .beat-price-btn:hover {
+            background: var(--accent-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(67, 97, 238, 0.3);
+            color: white;
+            text-decoration: none;
+        }
+
+        .beat-price-btn.disabled {
+            background: rgba(255, 255, 255, 0.1);
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        .beat-price-btn i {
+            font-size: 1rem;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 4rem 0;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            color: var(--accent-color);
+            margin-bottom: 1.5rem;
+        }
+
+        .audio-player {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(15, 15, 15, 0.95);
+            padding: 1rem;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .audio-player audio {
+            width: 100%;
+            max-width: 800px;
+        }
+
+        .close-player {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            transition: color 0.3s ease;
+        }
+
+        .close-player:hover {
+            color: #ff4444;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+<div class="main-content">
+    <div class="container">
+        <div class="filter-section">
+            <h3 class="filter-title">
+                <i class="fas fa-filter"></i>
+                {% if search_query %}
+                    Search Results for "{{ search_query }}"
+                {% else %}
+                    Filters
+                {% endif %}
+            </h3>
+            {% if not search_query %}
+                <form method="get" action="{{ path('app_beat_index') }}" class="mb-3">
+                    <div class="d-flex flex-column gap-4">
+                        <div>
+                            <label for="genre" class="filter-title d-block mb-3"><i class="fas fa-music"></i> Genre</label>
+                            <select name="genre" id="genre" class="genre-select" aria-label="Genre filter">
+                                <option value="" {% if selected_genre is empty %}selected{% endif %}>All Genres</option>
+                                {% for genre in ['Drill', 'Trap', 'House', 'Amapiano', 'Boombap', 'RnB'] %}
+                                    <option value="{{ genre }}" {% if selected_genre == genre %}selected{% endif %}>{{ genre }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="d-flex gap-4 align-items-end">
+                            <div class="d-flex flex-column">
+                                <label for="bpm" class="filter-title mb-2"><i class="fas fa-tachometer-alt"></i> BPM</label>
+                                <input type="number" name="bpm" id="bpm" min="0" class="form-control" style="width: 140px;" 
+                                       value="{{ selected_bpm is not null ? selected_bpm : '' }}" placeholder="e.g. 120" aria-label="BPM filter">
+                            </div>
+                            <div class="d-flex flex-column">
+                                <label for="price" class="filter-title mb-2"><i class="fas fa-dollar-sign"></i> Max Price</label>
+                                <input type="number" name="price" id="price" min="0" step="0.01" class="form-control" style="width: 140px;" 
+                                       value="{{ selected_price is not null ? selected_price : '' }}" placeholder="e.g. 50.00" aria-label="Max price filter">
+                            </div>
+                            <div class="d-flex align-items-end">
+                                <button type="submit" class="btn btn-primary px-4 py-2" aria-label="Apply filters">Apply Filters</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            {% endif %}
+        </div>
+
+        <div class="beats-grid">
+            {% for beat in beats %}
+                <a href="{{ path('app_beat_show', {'id': beat.id}) }}" class="beat-card">
+                    <div class="beat-image-wrapper" data-id="{{ beat.id }}">
+                        {% if beat.coverImage %}
+                            <img src="{{ asset('uploads/images/covers/' ~ beat.coverImage) }}" 
+                                 class="beat-image" alt="{{ beat.title }}">
+                        {% else %}
+                            <div class="beat-image bg-dark d-flex align-items-center justify-content-center">
+                                <i class="fas fa-music fa-3x text-muted"></i>
+                            </div>
+                        {% endif %}
+                        <div class="beat-overlay">
+                            <button class="beat-play-btn" data-audio="{{ asset('uploads/beats/' ~ beat.audioFile) }}">
+                                <i class="fas fa-play"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="beat-info">
+                        <h3 class="beat-title">{{ beat.title }}</h3>
+                        <p class="beat-producer">
+                            <i class="fas fa-user"></i>
+                            {{ beat.producer.username }}
+                        </p>
+                        <div class="beat-details">
+                            <div class="beat-bpm">
+                                <i class="fas fa-music"></i>
+                                {{ beat.bpm }} BPM
+                            </div>
+                            <div class="beat-actions">
+                                {% if is_granted('ROLE_CUSTOMER') %}
+                                    <form action="{{ path('app_cart_add', {'id': beat.id}) }}" method="post" class="d-inline">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('add-to-cart' ~ beat.id) }}">
+                                        <button type="submit" class="beat-price-btn">
+                                            <i class="fas fa-shopping-bag"></i>
+                                            ${{ beat.price }}
+                                        </button>
+                                    </form>
+                                {% else %}
+                                    <div class="beat-price-btn disabled">
+                                        <i class="fas fa-tag"></i>
+                                        ${{ beat.price }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            {% else %}
+                <div class="col-12">
+                    <div class="empty-state">
+                        <i class="fas fa-music"></i>
+                        <h3 class="mb-3">No Beats Found</h3>
+                        <p class="text-muted mb-4">Start your journey by uploading your first beat or check back later for new content.</p>
+                        {% if is_granted('ROLE_USER') %}
+                            <a href="{{ path('app_beat_new') }}" class="btn btn-primary btn-lg">
+                                <i class="fas fa-plus me-2"></i>Upload Your First Beat
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+    <!-- Audio Player -->
+    <div class="audio-player" style="display: none;">
+        <audio id="audioPlayer" controls controlsList="nodownload">
+            <source src="" type="audio/mpeg">
+            Your browser does not support the audio element.
+        </audio>
+        <button class="close-player" id="closePlayer">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const audioPlayer = document.querySelector('.audio-player');
+            const audio = document.getElementById('audioPlayer');
+            const closePlayer = document.getElementById('closePlayer');
+            let currentlyPlaying = null;
+
+            // Handle beat card clicks
+            document.querySelectorAll('.beat-play-btn').forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    const wrapper = this.closest('.beat-image-wrapper');
+                    const audioSrc = this.dataset.audio;
+                    const beatId = wrapper.dataset.id;
+
+                    if (currentlyPlaying === beatId) {
+                        if (audio.paused) {
+                            audio.play();
+                            this.querySelector('i').className = 'fas fa-pause';
+                        } else {
+                            audio.pause();
+                            this.querySelector('i').className = 'fas fa-play';
+                        }
+                        return;
+                    }
+
+                    // Reset all buttons to play state
+                    document.querySelectorAll('.beat-play-btn i').forEach(icon => {
+                        icon.className = 'fas fa-play';
+                    });
+
+                    audio.src = audioSrc;
+                    currentlyPlaying = beatId;
+                    audio.play();
+                    this.querySelector('i').className = 'fas fa-pause';
+                    audioPlayer.style.display = 'flex';
+                });
+            });
+
+            // Close player
+            closePlayer.addEventListener('click', function() {
+                audio.pause();
+                audio.currentTime = 0;
+                audioPlayer.style.display = 'none';
+                currentlyPlaying = null;
+                document.querySelectorAll('.beat-play-btn i').forEach(icon => {
+                    icon.className = 'fas fa-play';
+                });
+            });
+
+            // Handle audio end
+            audio.addEventListener('ended', function() {
+                currentlyPlaying = null;
+                document.querySelectorAll('.beat-play-btn i').forEach(icon => {
+                    icon.className = 'fas fa-play';
+                });
+            });
+
+            // Handle audio play/pause
+            audio.addEventListener('play', function() {
+                if (currentlyPlaying) {
+                    const button = document.querySelector(`.beat-image-wrapper[data-id="${currentlyPlaying}"] .beat-play-btn i`);
+                    if (button) button.className = 'fas fa-pause';
+                }
+            });
+
+            audio.addEventListener('pause', function() {
+                if (currentlyPlaying) {
+                    const button = document.querySelector(`.beat-image-wrapper[data-id="${currentlyPlaying}"] .beat-play-btn i`);
+                    if (button) button.className = 'fas fa-play';
+                }
+            });
+        });
+    </script>
+{% endblock %}
+{% endblock %}

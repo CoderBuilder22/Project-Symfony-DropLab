@@ -1,0 +1,159 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Shopping Cart{% endblock %}
+
+{% block body %}
+<div class="cart-section">
+    <div class="container">
+        <h1 class="section-title mb-4">Shopping Cart</h1>
+        
+        {% if cart and cart.cartItems|length > 0 %}
+            <div class="cart-container">
+                <div class="cart-header">
+                    <div class="cart-row">
+                        <div class="header-item">Beat</div>
+                        <div class="header-item">Producer</div>
+                        <div class="header-item">Price</div>
+                        <div class="header-item">Genre</div>
+                        <div class="header-item">Total</div>
+                        <div class="header-item"></div>
+                    </div>
+                </div>
+
+                {% for item in cart.cartItems %}
+                    <div class="cart-row cart-item-row">
+                        <div class="cart-item">
+                            <div class="d-flex align-items-center">
+                                <img src="{{ asset('uploads/images/covers/' ~ item.beat.coverImage) }}" 
+                                     alt="{{ item.beat.title }}" 
+                                     class="rounded me-3"
+                                     style="width: 50px; height: 50px; object-fit: cover;">
+                                <div>
+                                    <h6 class="mb-0">{{ item.beat.title }}</h6>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="cart-item">{{ item.beat.producer.username }}</div>
+                        <div class="cart-item price">${{ item.beat.price }}</div>
+                        <div class="cart-item">{{ item.beat.genre }}</div>
+                        <div class="cart-item price">${{ item.price }}</div>
+                        <div class="cart-item actions">
+                            <form action="{{ path('cart_remove_item', {'id': item.id}) }}" 
+                                  method="POST" 
+                                  class="d-inline">
+                                <button type="submit" class="btn btn-outline-danger btn-sm">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                {% endfor %}
+
+                <div class="cart-footer p-4">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <span class="text-light">Total ({{ cart.cartItems|length }} items):</span>
+                            <span class="h4 text-primary mb-0 ms-2">${{ cart.total }}</span>
+                        </div>
+                        <div class="d-flex gap-3">
+                            <form action="{{ path('app_cart_clear') }}" method="POST" class="d-inline">
+                                <button type="submit" class="btn btn-outline-danger">
+                                    <i class="fas fa-trash-alt me-2"></i>Clear Cart
+                                </button>
+                            </form>
+                            <a href="{{ path('payment_checkout_cart', {'id': cart.id}) }}" 
+                               class="btn btn-primary">
+                                <i class="fas fa-credit-card me-2"></i>Checkout All (${{ cart.total }})
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <div class="empty-cart text-center py-5">
+                <div class="empty-cart-icon mb-4">
+                    <i class="fas fa-shopping-bag fa-3x text-muted"></i>
+                </div>
+                <h2 class="text-white">Your cart is empty</h2>
+                <p class="text-muted">Looks like you haven't added any beats to your cart yet.</p>
+                <a href="{{ path('app_beat_index') }}" class="btn btn-primary">
+                    <i class="fas fa-music me-2"></i>Browse Beats
+                </a>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<style>
+.cart-section {
+    min-height: calc(100vh - 100px);
+    background: #0a0a0a;
+    padding: 40px 0;
+}
+
+.cart-container {
+    background: #151515;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.cart-header {
+    background: #1a1a1a;
+    border-bottom: 1px solid #2a2a2a;
+}
+
+.cart-row {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr 1fr 1fr;
+    align-items: center;
+    gap: 20px;
+    padding: 15px 20px;
+}
+
+.cart-item-row {
+    border-bottom: 1px solid #2a2a2a;
+}
+
+.cart-item-row:last-child {
+    border-bottom: none;
+}
+
+.header-item {
+    color: #808080;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.cart-item {
+    color: #ffffff;
+    font-size: 0.95rem;
+}
+
+.cart-item.price {
+    color: #0d6efd;
+    font-weight: 600;
+}
+
+.cart-item.actions {
+    display: flex;
+    gap: 10px;
+}
+
+.empty-cart-icon {
+    color: #404040;
+}
+
+.btn-outline-danger {
+    border-color: #dc3545;
+    color: #dc3545;
+}
+
+.btn-outline-danger:hover {
+    background-color: #dc3545;
+    color: #ffffff;
+}
+</style>
+{% endblock %} 

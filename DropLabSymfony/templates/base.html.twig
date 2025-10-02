@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>{% block title %}Welcome!{% endblock %} - DropLab</title>
+        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text></svg>">
+        {# Bootstrap CSS #}
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+        {# Font Awesome #}
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+        {# Custom CSS #}
+        <style>
+            :root {
+                --primary-color: #0d6efd;
+                --primary-hover: #0b5ed7;
+                --dark-bg: #121212;
+                --darker-bg: #0a0a0a;
+                --card-bg: #1e1e1e;
+                --text-primary: #ffffff;
+                --text-secondary: #b3b3b3;
+                --border-color: #2d2d2d;
+                --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                --hover-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+            }
+
+            /* Global Styles */
+            body {
+                background-color: var(--dark-bg);
+                color: var(--text-primary);
+                line-height: 1.6;
+            }
+
+            /* Navbar Styles */
+            .navbar {
+                background-color: var(--darker-bg) !important;
+                border-bottom: 1px solid var(--border-color);
+                padding: 1rem 0;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            }
+
+            .navbar-brand {
+                display: flex;
+                align-items: center;
+                gap: 1rem;
+                font-size: 1.5rem;
+                font-weight: bold;
+            }
+
+            .navbar-brand img {
+                width: 40px;
+                height: 40px;
+                border-radius: 8px;
+                object-fit: cover;
+            }
+
+            /* Hero Section */
+            .hero-section {
+                position: relative;
+                padding: 8rem 0;
+                min-height: 85vh;
+                background-color: var(--darker-bg);
+                overflow: hidden;
+            }
+
+            .hero-section .hero-background {
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                z-index: 0;
+            }
+
+            .hero-section .hero-background img {
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                width: 100%;
+                height: 100%;
+                transform: translate(-50%, -50%) scale(1.1);
+                object-fit: cover;
+                object-position: center;
+                opacity: 0;
+                transition: opacity 1.5s ease-in-out, transform 6s ease-in-out;
+            }
+
+            .hero-section .hero-background img.active {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
+            }
+
+            .hero-section::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: linear-gradient(
+                    to bottom,
+                    rgba(0, 0, 0, 0.85) 0%,
+                    rgba(0, 0, 0, 0.5) 50%,
+                    rgba(0, 0, 0, 0.85) 100%
+                );
+                z-index: 1;
+            }
+
+            .hero-section .container {
+                position: relative;
+                z-index: 2;
+            }
+
+            .hero-section h1 {
+                font-size: 4.5rem;
+                font-weight: 800;
+                margin-bottom: 1.5rem;
+                text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+                letter-spacing: -1px;
+            }
+
+            .hero-section h2 {
+                font-size: 1.5rem;
+                font-weight: 400;
+                margin-bottom: 2rem;
+                text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+                opacity: 0.9;
+            }
+
+            .hero-section .search-form {
+                background: rgba(255, 255, 255, 0.1);
+                backdrop-filter: blur(10px);
+                border-radius: 12px;
+                padding: 0.5rem;
+                box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+            }
+
+            .hero-section .form-control {
+                background: rgba(255, 255, 255, 0.1);
+                border: none;
+                color: white;
+                font-size: 1.1rem;
+            }
+
+            .hero-section .form-control::placeholder {
+                color: rgba(255, 255, 255, 0.7);
+            }
+
+            .hero-section .btn-primary {
+                padding: 0.8rem 1.5rem;
+                font-size: 1.1rem;
+            }
+
+            /* Trending Section */
+            .trending-section {
+                padding: 4rem 0;
+                background-color: var(--darker-bg);
+            }
+
+            .section-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 2rem;
+            }
+
+            .section-title {
+                font-size: 2rem;
+                font-weight: 600;
+                display: flex;
+                align-items: center;
+                gap: 1rem;
+            }
+
+            .beats-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+                gap: 2rem;
+            }
+
+            /* Beat Cards */
+            .beat-card {
+                background: var(--card-bg);
+                border-radius: 12px;
+                overflow: hidden;
+                transition: transform 0.3s ease, box-shadow 0.3s ease;
+                position: relative;
+            }
+
+            .beat-card:hover {
+                transform: translateY(-5px);
+                box-shadow: var(--hover-shadow);
+            }
+
+            .beat-image-wrapper {
+                position: relative;
+                padding-top: 100%;
+                overflow: hidden;
+                background: #000;
+            }
+
+            .beat-image {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                transition: all 0.3s ease;
+            }
+
+            .beat-card:hover .beat-image {
+                transform: scale(1.05);
+                opacity: 0.7;
+            }
+
+            .beat-info {
+                padding: 1.5rem;
+                background: linear-gradient(to top, var(--card-bg) 0%, rgba(30, 30, 30, 0.9) 100%);
+            }
+
+            .beat-title {
+                font-size: 1.2rem;
+                margin-bottom: 0.5rem;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                color: var(--text-primary);
+            }
+
+            .beat-producer {
+                color: var(--text-secondary);
+                font-size: 0.9rem;
+                margin-bottom: 1rem;
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+            }
+
+            .beat-actions {
+                display: flex;
+                gap: 1rem;
+                align-items: center;
+            }
+
+            .beat-price-btn {
+                background: var(--primary-color);
+                color: white;
+                border: none;
+                padding: 0.5rem 1rem;
+                border-radius: 6px;
+                flex: 1;
+                transition: all 0.3s ease;
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+            }
+
+            .beat-play-btn {
+                width: 45px;
+                height: 45px;
+                border-radius: 50%;
+                background: rgba(13, 110, 253, 0.2);
+                border: 2px solid var(--primary-color);
+                color: var(--primary-color);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transition: all 0.3s ease;
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                opacity: 0;
+                z-index: 2;
+            }
+
+            .beat-card:hover .beat-play-btn {
+                opacity: 1;
+            }
+
+            .beat-play-btn:hover,
+            .beat-play-btn.playing {
+                background: var(--primary-color);
+                color: white;
+                transform: translate(-50%, -50%) scale(1.1);
+            }
+
+            .beat-play-btn i {
+                font-size: 1.2rem;
+                line-height: 1;
+            }
+
+            /* Studio Section */
+            .studio-section {
+                background-color: var(--card-bg);
+                padding: 6rem 0;
+                position: relative;
+                overflow: hidden;
+            }
+
+            .studio-image-container {
+                position: relative;
+                border-radius: 12px;
+                overflow: hidden;
+                box-shadow: var(--card-shadow);
+                aspect-ratio: 16/9;
+            }
+
+            .studio-image {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                transition: transform 0.3s ease;
+            }
+
+            .studio-image:hover {
+                transform: scale(1.05);
+            }
+
+            .studio-features {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1.5rem;
+                margin: 2rem 0;
+            }
+
+            .studio-feature {
+                display: flex;
+                align-items: center;
+                gap: 1rem;
+                color: var(--text-secondary);
+            }
+
+            .studio-feature i {
+                font-size: 1.5rem;
+                color: var(--primary-color);
+            }
+
+            /* Genre Cards */
+            .genre-card {
+                position: relative;
+                border-radius: 12px;
+                overflow: hidden;
+                aspect-ratio: 16/9;
+            }
+
+            .genre-card img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                transition: transform 0.3s ease;
+            }
+
+            .genre-card:hover img {
+                transform: scale(1.05);
+            }
+
+            .card-img-overlay {
+                background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+                display: flex;
+                align-items: flex-end;
+                padding: 1.5rem;
+            }
+
+            .card-img-overlay h3 {
+                color: white;
+                margin: 0;
+                font-size: 1.5rem;
+                font-weight: 600;
+            }
+
+            /* Footer */
+            .footer {
+                background-color: var(--darker-bg);
+                border-top: 1px solid var(--border-color);
+            }
+
+            .social-links a {
+                font-size: 1.5rem;
+                transition: color 0.3s ease;
+            }
+
+            .social-links a:hover {
+                color: var(--primary-color) !important;
+            }
+
+            @media (max-width: 768px) {
+                .hero-section {
+                    min-height: 70vh;
+                    padding: 6rem 0;
+                }
+
+                .hero-section h1 {
+                    font-size: 3rem;
+                }
+
+                .hero-section h2 {
+                    font-size: 1.25rem;
+                }
+            }
+
+            /* Cart Icon Styles */
+            .nav-cart {
+                position: relative;
+                padding: 8px 12px;
+            }
+
+            .nav-cart i {
+                font-size: 1.2rem;
+                color: rgba(255, 255, 255, 0.9);
+            }
+
+            .cart-count {
+                position: absolute;
+                top: 0;
+                right: 0;
+                background: var(--primary-color);
+                color: white;
+                font-size: 0.7rem;
+                font-weight: 600;
+                min-width: 16px;
+                height: 16px;
+                border-radius: 8px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding: 0 4px;
+            }
+        </style>
+        {% block stylesheets %}{% endblock %}
+    </head>
+    <body>
+        {# Navigation #}
+        <nav class="navbar navbar-expand-lg navbar-dark">
+            <div class="container">
+                <a class="navbar-brand" href="{{ path('app_home') }}">
+                    <img src="{{ asset('uploads/images/covers/logo.png') }}" alt="DropLab"> DropLab
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="/about">About</a>
+                        </li>
+                        {% if app.user %}
+                            {% if is_granted('ROLE_PRODUCER') %}
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{ path('app_dashboard') }}">Dashboard</a>
+                                </li>
+                            {% else %}
+                                <li class="nav-item">
+                                    <a class="nav-link nav-cart" href="/cart">
+                                        <i class="fas fa-shopping-bag"></i>
+                                    </a>
+                                </li>
+                            {% endif %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ path('app_logout') }}">Logout</a>
+                            </li>
+                        {% else %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ path('app_login') }}">Sign In</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ path('app_register') }}">Sign Up</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link nav-cart" href="/cart">
+                                    <i class="fas fa-shopping-bag"></i>
+                                </a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        {% block body %}{% endblock %}
+
+        {# Footer #}
+        <footer class="footer text-light py-5">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-4">
+                        <h5>About DropLab</h5>
+                        <p class="text-secondary">Your premier destination for high-quality beats and music production.</p>
+                    </div>
+                    <div class="col-md-4">
+                        <h5>Quick Links</h5>
+                        <ul class="list-unstyled">
+                            <li><a href="/beats" class="text-secondary text-decoration-none">Beats</a></li>
+                            <li><a href="/about" class="text-secondary text-decoration-none">About Us</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-md-4">
+                        <h5>Connect With Us</h5>
+                        <div class="social-links">
+                            <a href="#" class="text-secondary me-3"><i class="fab fa-facebook"></i></a>
+                            <a href="#" class="text-secondary me-3"><i class="fab fa-twitter"></i></a>
+                            <a href="#" class="text-secondary me-3"><i class="fab fa-instagram"></i></a>
+                            <a href="#" class="text-secondary"><i class="fab fa-youtube"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <hr class="my-4 border-secondary">
+                <div class="text-center">
+                    <p class="text-secondary">&copy; {{ "now"|date("Y") }} DropLab. All rights reserved.</p>
+                </div>
+            </div>
+        </footer>
+
+        {# Bootstrap JS #}
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        {% block javascripts %}{% endblock %}
+    </body>
+</html>

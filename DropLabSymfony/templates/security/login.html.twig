@@ -1,0 +1,156 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Log in to DropLab{% endblock %}
+
+{% block body %}
+<section class="auth-section py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6 col-lg-5">
+                <div class="auth-card">
+                    <div class="text-center mb-4">
+                        <img src="{{ asset('uploads/images/covers/logo.png') }}" alt="DropLab" class="auth-logo mb-4">
+                        <h1 class="h3">Welcome Back</h1>
+                        <p class="text-secondary">Sign in to continue to DropLab</p>
+                    </div>
+
+                    {% if error %}
+                        <div class="alert alert-danger">
+                            {{ error.messageKey|trans(error.messageData, 'security') }}
+                        </div>
+                    {% endif %}
+
+                    <form method="post" class="auth-form">
+                        <div class="form-group mb-3">
+                            <label for="inputEmail" class="form-label">Email address</label>
+                            <input type="email" value="{{ last_username }}" name="email" id="inputEmail" class="form-control" placeholder="name@example.com" required autofocus>
+                        </div>
+
+                        <div class="form-group mb-4">
+                            <label for="inputPassword" class="form-label">Password</label>
+                            <input type="password" name="password" id="inputPassword" class="form-control" placeholder="Enter your password" required>
+                        </div>
+
+                        <div class="mb-4">
+                            <div class="form-check custom-checkbox">
+                                <input class="form-check-input" type="checkbox" name="_remember_me" id="remember_me">
+                                <label class="form-check-label" for="remember_me">
+                                    Remember me
+                                </label>
+                            </div>
+                        </div>
+
+                        <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+                        <button class="btn btn-primary w-100 btn-lg mb-3" type="submit">
+                            <i class="fas fa-sign-in-alt me-2"></i>Sign in
+                        </button>
+
+                        <div class="text-center">
+                            <p class="mb-0">Don't have an account? <a href="{{ path('app_register') }}" class="text-primary">Register here</a></p>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="text-center mt-4">
+                    <p class="text-secondary">
+                        <small>By signing in, you agree to DropLab's Terms of Service and Privacy Policy</small>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    .auth-section {
+        min-height: calc(100vh - 180px);
+        display: flex;
+        align-items: center;
+        background: linear-gradient(to bottom, var(--darker-bg), var(--dark-bg));
+    }
+
+    .auth-card {
+        background: var(--card-bg);
+        border-radius: 15px;
+        padding: 2.5rem;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .auth-logo {
+        width: 80px;
+        height: 80px;
+        object-fit: cover;
+        border-radius: 15px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .auth-form .form-control {
+        background-color: var(--dark-bg);
+        border: 1px solid var(--border-color);
+        color: var(--text-primary);
+        transition: all 0.3s ease;
+        padding: 0.75rem 1rem;
+        font-size: 0.95rem;
+    }
+
+    .auth-form .form-control:focus {
+        background-color: var(--dark-bg);
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.15);
+        color: var(--text-primary);
+    }
+
+    .auth-form .form-label {
+        color: var(--text-secondary);
+        font-size: 0.95rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .auth-form .form-check-label {
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+    }
+
+    .auth-form .form-check-input {
+        background-color: var(--dark-bg);
+        border-color: var(--border-color);
+        cursor: pointer;
+    }
+
+    .auth-form .form-check-input:checked {
+        background-color: var(--primary-color);
+        border-color: var(--primary-color);
+    }
+
+    .auth-form .btn-primary {
+        padding: 1rem;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .auth-form .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(13, 110, 253, 0.3);
+    }
+
+    .auth-form a {
+        text-decoration: none;
+        transition: color 0.3s ease;
+    }
+
+    .auth-form a:hover {
+        color: var(--primary-hover) !important;
+    }
+
+    @media (max-width: 768px) {
+        .auth-card {
+            padding: 2rem;
+        }
+    }
+</style>
+{% endblock %} 

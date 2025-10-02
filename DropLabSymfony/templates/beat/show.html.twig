@@ -1,0 +1,381 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ beat.title }}{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        :root {
+            --accent-color: #4361ee;
+            --accent-hover: #3048c4;
+            --dark-bg: #121212;
+            --card-bg: rgba(255, 255, 255, 0.05);
+            --card-border: rgba(67, 97, 238, 0.3);
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.7);
+        }
+
+        .beat-header {
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+            padding: 4rem 0;
+            margin-bottom: 0;
+            color: var(--text-primary);
+            border-bottom: 1px solid var(--card-border);
+            position: relative;
+            overflow: hidden;
+            min-height: 80vh;
+            display: flex;
+            align-items: center;
+        }
+
+        .beat-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(67, 97, 238, 0.15) 0%, transparent 70%),
+                radial-gradient(circle at 80% 50%, rgba(67, 97, 238, 0.15) 0%, transparent 70%),
+                repeating-linear-gradient(
+                    45deg,
+                    rgba(67, 97, 238, 0.05) 0px,
+                    rgba(67, 97, 238, 0.05) 1px,
+                    transparent 1px,
+                    transparent 10px
+                );
+            pointer-events: none;
+            animation: backgroundFloat 15s ease-in-out infinite alternate;
+        }
+
+        @keyframes backgroundFloat {
+            0% { transform: translateY(0) scale(1); }
+            100% { transform: translateY(-20px) scale(1.1); }
+        }
+
+        .beat-header::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(to bottom, 
+                rgba(10, 10, 10, 0.8) 0%,
+                rgba(10, 10, 10, 0.6) 50%,
+                rgba(10, 10, 10, 0.8) 100%
+            );
+            pointer-events: none;
+        }
+
+        .beat-header .container {
+            position: relative;
+            z-index: 2;
+        }
+
+        .cover-image-container {
+            position: relative;
+            padding-bottom: 100%;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4),
+                       0 0 30px rgba(67, 97, 238, 0.2);
+            border: 1px solid var(--card-border);
+            background: var(--dark-bg);
+            transform: perspective(1000px) rotateY(-5deg);
+            transition: transform 0.5s ease;
+        }
+
+        .cover-image-container:hover {
+            transform: perspective(1000px) rotateY(0deg);
+        }
+
+        .cover-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .cover-image-container:hover .cover-image {
+            transform: scale(1.05);
+        }
+
+        .beat-title {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, #fff, #4361ee);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 2px 10px rgba(67, 97, 238, 0.3);
+        }
+
+        .producer-info {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .audio-player {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin: 2rem 0;
+            border: 1px solid rgba(67, 97, 238, 0.2);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .audio-player audio {
+            width: 100%;
+            height: 40px;
+        }
+
+        .btn-primary {
+            background: var(--accent-color);
+            border: none;
+            padding: 1rem 2rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(67, 97, 238, 0.3);
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(67, 97, 238, 0.4);
+        }
+
+        .beat-info-section {
+            background: #0a0a0a;
+            padding: 3rem 0;
+            position: relative;
+        }
+
+        .beat-info-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(to right, 
+                transparent, 
+                var(--card-border),
+                transparent
+            );
+        }
+
+        .beat-info-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 2rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+            height: 100%;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin: 0;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.2s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            background: rgba(67, 97, 238, 0.05);
+            box-shadow: 0 8px 24px rgba(67, 97, 238, 0.1);
+        }
+
+        .stat-card i {
+            font-size: 1.75rem;
+            color: var(--accent-color);
+            margin-bottom: 1rem;
+        }
+
+        .stat-card h6 {
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-card p {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .beat-info-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(67, 97, 238, 0.1);
+        }
+        .producer-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .producer-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(67, 97, 238, 0.1);
+        }
+        .producer-image-wrapper {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 1rem;
+            position: relative;
+        }
+        .producer-image {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--accent-color);
+            box-shadow: 0 4px 12px rgba(67, 97, 238, 0.2);
+        }
+        .producer-placeholder {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: var(--card-bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 3px solid var(--accent-color);
+        }
+        .btn-outline-primary {
+            color: var(--accent-color);
+            border-color: var(--accent-color);
+        }
+        .btn-outline-primary:hover {
+            background: var(--accent-color);
+            border-color: var(--accent-color);
+        }
+        .text-primary {
+            color: var(--accent-color) !important;
+        }
+        .text-muted {
+            color: var(--text-secondary) !important;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+<div class="beat-header">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-4">
+                <div class="cover-image-container">
+                    {% if beat.coverImage %}
+                        <img src="{{ asset('uploads/images/covers/' ~ beat.coverImage) }}" class="cover-image" alt="{{ beat.title }}">
+                    {% else %}
+                        <div class="cover-image d-flex align-items-center justify-content-center">
+                            <i class="fas fa-music fa-5x text-muted"></i>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-md-8">
+                <h1 class="beat-title">{{ beat.title }}</h1>
+                <p class="producer-info">
+                    <i class="fas fa-user"></i>{{ beat.producer.username }}
+                </p>
+                
+                <div class="audio-player">
+                    <audio controls controlsList="nodownload" class="w-100">
+                        <source src="{{ asset('uploads/beats/' ~ beat.audioFile) }}" type="audio/mpeg">
+                        Your browser does not support the audio element.
+                    </audio>
+                </div>
+
+                {% if is_granted('ROLE_USER') and app.user != beat.producer %}
+                    <div class="d-flex gap-3">
+                        <a href="{{ path('app_order_new', {'id': beat.id}) }}" class="btn btn-primary btn-lg">
+                            <i class="fas fa-shopping-bag me-2"></i>${{ beat.price }} - Buy Now
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="beat-info-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <i class="fas fa-music"></i>
+                        <h6 class="text-secondary">Genre</h6>
+                        <p class="mb-0">{{ beat.genre }}</p>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-clock"></i>
+                        <h6 class="text-secondary">BPM</h6>
+                        <p class="mb-0">{{ beat.bpm }}</p>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-calendar"></i>
+                        <h6 class="text-secondary">Released</h6>
+                        <p class="mb-0">{{ beat.createdAt|date('M d, Y') }}</p>
+                    </div>
+                </div>
+
+                {% if is_granted('ROLE_USER') and app.user == beat.producer %}
+                    <div class="d-flex gap-2 mt-4">
+                        <a href="{{ path('app_beat_edit', {'id': beat.id}) }}" class="btn btn-outline-primary">
+                            <i class="fas fa-edit me-2"></i>Edit Beat
+                        </a>
+                        {{ include('beat/_delete_form.html.twig') }}
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="col-md-4">
+                <div class="producer-card">
+                    <div class="producer-image-wrapper">
+                        {% if beat.producer.profilePicture %}
+                            <img src="{{ asset('uploads/profiles/' ~ beat.producer.profilePicture) }}" class="producer-image" alt="{{ beat.producer.username }}">
+                        {% else %}
+                            <div class="producer-placeholder">
+                                <i class="fas fa-user fa-3x text-muted"></i>
+                            </div>
+                        {% endif %}
+                    </div>
+                    <h4 class="mb-2">{{ beat.producer.username }}</h4>
+                    <p class="text-muted mb-3">
+                        <i class="fas fa-calendar-alt me-2"></i>Member since {{ beat.producer.createdAt|date('M Y') }}
+                    </p>
+                    <a href="{{ path('app_beat_index', {'producer': beat.producer.id}) }}" class="btn btn-outline-primary w-100">
+                        <i class="fas fa-music me-2"></i>View All Beats
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

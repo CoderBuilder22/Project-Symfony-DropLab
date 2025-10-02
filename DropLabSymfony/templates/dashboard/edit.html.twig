@@ -1,0 +1,196 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit Beat - {{ beat.title }}{% endblock %}
+
+{% block body %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card bg-dark border-light">
+                <div class="card-body">
+                    <h2 class="card-title mb-4">Edit Beat</h2>
+
+                    {{ form_start(form, {'attr': {'class': 'beat-form'}}) }}
+                        <div class="row">
+                            <div class="col-md-8">
+                                <div class="mb-3">
+                                    {{ form_label(form.title, 'Title', {'label_attr': {'class': 'form-label'}}) }}
+                                    {{ form_widget(form.title, {'attr': {'class': 'form-control', 'placeholder': 'Enter beat title'}}) }}
+                                    {{ form_errors(form.title) }}
+                                </div>
+
+                                <div class="mb-3">
+                                    {{ form_label(form.description, 'Description', {'label_attr': {'class': 'form-label'}}) }}
+                                    {{ form_widget(form.description, {'attr': {'class': 'form-control', 'rows': '4', 'placeholder': 'Describe your beat...'}}) }}
+                                    {{ form_errors(form.description) }}
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            {{ form_label(form.price, 'Price ($)', {'label_attr': {'class': 'form-label'}}) }}
+                                            {{ form_widget(form.price, {'attr': {'class': 'form-control', 'placeholder': '29.99'}}) }}
+                                            {{ form_errors(form.price) }}
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            {{ form_label(form.bpm, 'BPM', {'label_attr': {'class': 'form-label'}}) }}
+                                            {{ form_widget(form.bpm, {'attr': {'class': 'form-control', 'placeholder': '140'}}) }}
+                                            {{ form_errors(form.bpm) }}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    {{ form_label(form.genre, 'Genre', {'label_attr': {'class': 'form-label'}}) }}
+                                    {{ form_widget(form.genre, {'attr': {'class': 'form-select'}}) }}
+                                    {{ form_errors(form.genre) }}
+                                </div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <div class="upload-preview mb-3 text-center">
+                                    <div class="cover-preview mb-3">
+                                        <img src="{{ asset('uploads/images/covers/' ~ beat.coverImage) }}" alt="{{ beat.title }}" class="img-fluid rounded" id="coverPreview">
+                                    </div>
+                                    <div class="mb-3">
+                                        {{ form_label(form.coverImage, 'Cover Image', {'label_attr': {'class': 'form-label'}}) }}
+                                        {{ form_widget(form.coverImage, {'attr': {'class': 'form-control', 'accept': 'image/*', 'id': 'coverInput'}}) }}
+                                        {{ form_errors(form.coverImage) }}
+                                        <small class="text-secondary">Leave empty to keep current image</small>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    {{ form_label(form.audioFile, 'Audio File', {'label_attr': {'class': 'form-label'}}) }}
+                                    {{ form_widget(form.audioFile, {'attr': {'class': 'form-control', 'accept': 'audio/*', 'id': 'audioInput'}}) }}
+                                    {{ form_errors(form.audioFile) }}
+                                    <small class="text-secondary">Leave empty to keep current audio</small>
+                                </div>
+
+                                <div class="current-audio mb-3">
+                                    <label class="form-label">Current Audio</label>
+                                    <audio controls class="w-100" id="audioPreview">
+                                        <source src="{{ asset('uploads/beats/' ~ beat.audioFile) }}" type="audio/mpeg">
+                                        Your browser does not support the audio element.
+                                    </audio>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between mt-4">
+                            <a href="{{ path('app_dashboard') }}" class="btn btn-outline-light">
+                                <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save me-2"></i>Save Changes
+                            </button>
+                        </div>
+                    {{ form_end(form) }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.card {
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(10px);
+}
+
+.form-control, .form-select {
+    background-color: var(--dark-bg);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    transition: all 0.3s ease;
+    padding: 0.75rem 1rem;
+    font-size: 0.95rem;
+}
+
+.form-control:focus, .form-select:focus {
+    background-color: var(--dark-bg);
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.15);
+    color: var(--text-primary);
+}
+
+.form-label {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    margin-bottom: 0.5rem;
+}
+
+.cover-preview {
+    background-color: var(--darker-bg);
+    border-radius: 10px;
+    padding: 1rem;
+}
+
+.cover-preview img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 5px;
+}
+
+.btn {
+    padding: 0.75rem 1.5rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+}
+
+.btn-primary:hover {
+    box-shadow: 0 5px 15px rgba(13, 110, 253, 0.3);
+}
+
+audio {
+    background-color: var(--darker-bg);
+    border-radius: 8px;
+}
+
+audio::-webkit-media-controls-panel {
+    background-color: var(--darker-bg);
+}
+
+audio::-webkit-media-controls-current-time-display,
+audio::-webkit-media-controls-time-remaining-display {
+    color: var(--text-primary);
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const coverInput = document.getElementById('coverInput');
+    const coverPreview = document.getElementById('coverPreview');
+    const audioInput = document.getElementById('audioInput');
+    const audioPreview = document.getElementById('audioPreview');
+
+    coverInput.addEventListener('change', function() {
+        const file = this.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                coverPreview.src = e.target.result;
+            }
+            reader.readAsDataURL(file);
+        }
+    });
+
+    audioInput.addEventListener('change', function() {
+        const file = this.files[0];
+        if (file) {
+            const url = URL.createObjectURL(file);
+            audioPreview.src = url;
+            audioPreview.load();
+            audioPreview.play();
+        }
+    });
+});
+</script>
+{% endblock %}
